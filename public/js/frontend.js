@@ -1,8 +1,8 @@
-function saveTodb(event) {
-  event.preventDefault();
-  const name = event.target.name.value;
-  const email = event.target.email.value;
-  const password = event.target.password.value;
+function saveTodb(e) {
+  e.preventDefault();
+  const name = e.target.name.value;
+  const email = e.target.email.value;
+  const password = e.target.password.value;
 
   const obj = {
     name,
