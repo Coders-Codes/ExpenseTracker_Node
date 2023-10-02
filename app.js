@@ -6,8 +6,7 @@ const bodyParser = require("body-parser");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static("public")); // for js files
-
+app.use(express.static("public"));
 app.use("/", SignupRoute);
 
 app.listen(3000, () => {

@@ -13,8 +13,8 @@ function saveTodb(e) {
 
   axios
     .post("http://localhost:3000/signUp", obj)
-    .then((response) => {
-      console.log(response);
+    .then((result) => {
+      console.log(result);
     })
     .catch((err) => {
       console.log("Some Error Occured", err);

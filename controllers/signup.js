@@ -1,8 +1,8 @@
 const path = require("path");
 
 exports.getPage = (req, res) => {
-  const Filename = path.join(__dirname, "../", "views", "index.html");
-  res.sendFile(Filename);
+  const File = path.join(__dirname, "../", "views", "index.html");
+  res.sendFile(File);
 };
 
 exports.postLogin = async (req, res) => {
