@@ -1,8 +1,8 @@
-function saveTodb(e) {
-  e.preventDefault();
-  const name = e.target.name.value;
-  const email = e.target.email.value;
-  const password = e.target.password.value;
+function saveTodb(event) {
+  event.preventDefault();
+  const name = event.target.name.value;
+  const email = event.target.email.value;
+  const password = event.target.password.value;
 
   const obj = {
     name,
@@ -12,11 +12,11 @@ function saveTodb(e) {
   console.log(obj);
 
   axios
-    .post("http://localhost:3000/signUp", obj)
-    .then((result) => {
-      console.log(result);
+    .post("http://localhost:3000/signup", obj)
+    .then((response) => {
+      console.log(response);
     })
     .catch((err) => {
-      console.log("Some Error Occured", err);
+      console.log("Some Error Occurred", err);
     });
 }
