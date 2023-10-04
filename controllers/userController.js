@@ -1,5 +1,6 @@
 const path = require("path");
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
 exports.signup = async (req, res) => {
   try {
@@ -7,17 +8,15 @@ exports.signup = async (req, res) => {
     const newUser = { name, email, password };
     console.log(newUser);
 
-    await User.create({
-      name: name,
-      email: email,
-      password: password,
-    });
-
+    const saltrounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltrounds);
+    await User.create({ name, email, password: hashedPassword });
     return res.status(201).json(newUser);
   } catch (err) {
     res.status(500).json({
       error: err,
     });
+    // res.redirect("/login");
   }
 };
 
@@ -28,15 +27,22 @@ exports.login = async (req, res) => {
 
     const user = await User.findAll({ where: { email } });
     if (user.length > 0) {
-      if (user[0].password === password) {
-        res
-          .status(200)
-          .json({ success: true, message: "User logged in Successfully" });
-      } else {
-        res
-          .status(400)
-          .json({ success: false, message: "Password is Incorrect" });
-      }
+      bcrypt.compare(password, user[0].password, (err, result) => {
+        if (err) {
+          res
+            .status(500)
+            .json({ success: false, message: "Something went Wrong" });
+        }
+        if (result == true) {
+          res
+            .status(200)
+            .json({ success: true, message: "User logged in Successfully" });
+        } else {
+          res
+            .status(400)
+            .json({ success: false, message: "Password is Incorrect" });
+        }
+      });
     } else {
       return res
         .status(404)

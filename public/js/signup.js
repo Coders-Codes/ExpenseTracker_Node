@@ -17,6 +17,7 @@ function signup(event) {
       console.log(response);
     })
     .catch((err) => {
-      console.log("Some Error Occurred -- User_already_exists", err);
+      console.log("Some Error Occurred", err);
     });
+  // window.location.href = "login.html";
 }
