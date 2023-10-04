@@ -1,15 +1,18 @@
 const express = require("express");
 const app = express();
 
-const SignUpRoute = require("./routes/signuproute");
+const SignUpRoute = require("./routes/userRoute");
 const bodyParser = require("body-parser");
 const sequelize = require("./config/database");
+const cors = require("cors");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use(express.static("public"));
-app.use("/", SignUpRoute);
+// app.use("/", SignUpRoute);
+app.use("/user", SignUpRoute);
 
 sequelize
   .sync()
