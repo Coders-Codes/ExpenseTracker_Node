@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form onsubmit="addExpense(event)" method="post">
+      <h1>Expense Tracker</h1>
+      <br />
+      <fieldset>
+        <legend>
+          <b>Data of Expenses</b>
+        </legend>
+        <label for="amount">Expense Amount:</label><br />
+        <input
+          type="number"
+          min="1"
+          max="100000"
+          id="amount"
+          name="expense"
+        /><br /><br />
+
+        <label for="description">Choose Description:</label><br />
+        <input type="text" id="description" name="description" /><br /><br />
+
+        <label for="category">Choose a Category:</label>
+        <select name="Category" id="category">
+          <option value="food">Food</option>
+          <option value="grocery">Grocery</option>
+          <option value="fuel">Fuel</option>
+          <option value="travel">Travel</option>
+          <option value="electronics">Electronics</option>
+          <option value="bills">Bills</option>
+          <option value="misc">Miscellaneous</option></select
+        ><br /><br />
+
+        <input type="submit" id="Submit" value="Add Expense" />
+      </fieldset>
+    </form>
+    <ul id="listofExpenses"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script src="/ExpenseTracker/public/js/expense.js"></script>
+  </body>
+</html>

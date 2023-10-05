@@ -15,9 +15,9 @@ function signup(event) {
     .post("http://localhost:3000/user/signup", obj)
     .then((response) => {
       console.log(response);
+      window.location.href = "login.html";
     })
     .catch((err) => {
       console.log("Some Error Occurred", err);
     });
-  // window.location.href = "login.html";
 }

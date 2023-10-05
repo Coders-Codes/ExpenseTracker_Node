@@ -16,11 +16,8 @@ function login(event) {
   axios
     .post("http://localhost:3000/user/login", loginDetails)
     .then((response) => {
-      // if (response.data.success) {
       alert(response.data.message);
-      // } else {
-      //   alert(response.data.message);
-      // }
+      window.location.href = "expense.html";
     })
     .catch((err) => {
       console.log(JSON.stringify(err));

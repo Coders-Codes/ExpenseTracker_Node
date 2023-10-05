@@ -1,7 +1,7 @@
-const path = require("path");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 
+//CREATING THE NEW USR USING POST REQUEST METHOD
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -16,10 +16,10 @@ exports.signup = async (req, res) => {
     res.status(500).json({
       error: err,
     });
-    // res.redirect("/login");
   }
 };
 
+// LOGIN THE EXISTING USER BY POST REQUEST METHOD
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -52,3 +52,5 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: err.message, success: false });
   }
 };
+
+exports.dailyExpense = (req, res) => {};
