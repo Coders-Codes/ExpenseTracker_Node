@@ -4,18 +4,23 @@ function addExpense(event) {
   const amount = event.target.amount.value;
   const description = event.target.description.value;
   const category = event.target.category.value;
+  // userId: 1
 
   const obj = {
     amount,
     description,
     category,
+    // userId: 1,
   };
   console.log(obj);
   displayExpense(obj);
 
   //CREATING A NEW EXPENSE USING POST REQUEST METHOD
+  const token = localStorage.getItem("token");
   axios
-    .post("http://localhost:3000/expense/addexpense", obj)
+    .post("http://localhost:3000/expense/addexpense", obj, {
+      headers: { Authorization: token },
+    })
     .then((response) => {
       console.log(response);
     })
@@ -27,8 +32,11 @@ function addExpense(event) {
 
 //GETTING THE DETAILS OF ALL THE EXPENSES ON THE SCREEN BY GET METHOD
 window.addEventListener("load", () => {
+  const token = localStorage.getItem("token");
   axios
-    .get("http://localhost:3000/expense/getExpenses")
+    .get("http://localhost:3000/expense/getExpenses", {
+      headers: { Authorization: token },
+    })
     .then((response) => {
       console.log(response);
 
@@ -57,12 +65,14 @@ function displayExpense(obj) {
 
   //FUNCTIONALITY TO DELETE EXPENSES BY USING DELETE METHOD
   let id = obj.id;
-  console.log(id);
+  // console.log(id);
 
   deleteButton.onclick = async () => {
     try {
+      const token = localStorage.getItem("token");
       let res = await axios.delete(
-        `http://localhost:3000/expense/deleteExpenses/${id}`
+        `http://localhost:3000/expense/deleteExpenses/${id}`,
+        { headers: { Authorization: token } }
       );
       console.log(res.status, res.statusText);
     } catch (err) {

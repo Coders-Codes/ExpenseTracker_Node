@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 //CREATING THE NEW USR USING POST REQUEST METHOD
 exports.signup = async (req, res) => {
@@ -19,6 +20,10 @@ exports.signup = async (req, res) => {
   }
 };
 
+function generateAccessToken(id, name) {
+  return jwt.sign({ userId: id, name: name }, "12345678909876543210");
+}
+
 // LOGIN THE EXISTING USER BY POST REQUEST METHOD
 exports.login = async (req, res) => {
   try {
@@ -34,9 +39,11 @@ exports.login = async (req, res) => {
             .json({ success: false, message: "Something went Wrong" });
         }
         if (result == true) {
-          res
-            .status(200)
-            .json({ success: true, message: "User logged in Successfully" });
+          res.status(200).json({
+            success: true,
+            message: "User logged in Successfully",
+            token: generateAccessToken(user[0].id, user[0].name),
+          });
         } else {
           res
             .status(400)
@@ -52,5 +59,3 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: err.message, success: false });
   }
 };
-
-exports.dailyExpense = (req, res) => {};
