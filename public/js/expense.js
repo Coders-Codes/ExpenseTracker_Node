@@ -84,3 +84,41 @@ function displayExpense(obj) {
   childEle.appendChild(deleteButton);
   parentEle.appendChild(childEle);
 }
+
+document.getElementById("rzp-button").onclick = async function (e) {
+  const token = localStorage.getItem("token");
+  const response = await axios.get(
+    "http://localhost:3000/purchase/premiumMembership",
+    { headers: { Authorization: token } }
+  );
+  console.log(response);
+
+  var options = {
+    key: response.data.key_id,
+    // key: response.data.rzp_test_gXBDUFLwMeUwdo,
+    order_id: response.data.order.id,
+
+    //This handler function will handle the success payment
+    handler: async function (response) {
+      await axios.post(
+        "http://localhost:3000/purchase/updateTransactionStatus",
+        {
+          order_id: options.order_id,
+          payment_id: response.razorpay_payment_id,
+        },
+        { headers: { Authorization: token } }
+      );
+
+      alert("You are a Premium User Now !");
+    },
+  };
+
+  const rzp1 = new Razorpay(options);
+  rzp1.open();
+  e.preventDefault();
+
+  rzp1.on("Payment Failed", function (response) {
+    console.log(response);
+    alert("Something went Wrong");
+  });
+};
