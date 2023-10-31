@@ -12,7 +12,7 @@ function signup(event) {
   console.log(obj);
 
   axios
-    .post("http://localhost:3000/user/signup", obj)
+    .post("http://localhost:5000/user/signup", obj)
     .then((response) => {
       console.log(response);
       window.location.href = "login.html";

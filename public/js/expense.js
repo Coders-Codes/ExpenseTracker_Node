@@ -10,7 +10,6 @@ function addExpense(event) {
     amount,
     description,
     category,
-    // userId: 1,
   };
   console.log(obj);
   displayExpense(obj);
@@ -18,7 +17,7 @@ function addExpense(event) {
   //CREATING A NEW EXPENSE USING POST REQUEST METHOD
   const token = localStorage.getItem("token");
   axios
-    .post("http://localhost:3000/expense/addexpense", obj, {
+    .post("http://localhost:5000/expense/addexpense", obj, {
       headers: { Authorization: token },
     })
     .then((response) => {
@@ -30,15 +29,51 @@ function addExpense(event) {
     });
 }
 
+function showPremiumUserMessage() {
+  document.getElementById("rzp-button").style.visibility = "hidden";
+  document.getElementById("message").innerHTML = "You are a Premium User";
+}
+
+//function to decode a token from the frontend
+function parseJwt(token) {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
+}
+
 //GETTING THE DETAILS OF ALL THE EXPENSES ON THE SCREEN BY GET METHOD
-window.addEventListener("load", () => {
+window.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
+  // console.log("token", token);
+  const decodedToken = parseJwt(token);
+  console.log(decodedToken);
+  const ispremiumUser = decodedToken.ispremiumUser;
+  if (ispremiumUser) {
+    showPremiumUserMessage();
+    showLeaderBoard();
+  }
   axios
-    .get("http://localhost:3000/expense/getExpenses", {
+    .get("http://localhost:5000/expense/getExpenses", {
       headers: { Authorization: token },
     })
     .then((response) => {
       console.log(response);
+      if (response.data.ispremiumUser) {
+        document.getElementById("rzp-button").style.display = "none";
+        document.getElementById("message").innerHTML =
+          "You are a Premium User <br>";
+        showLeaderBoard();
+      }
 
       for (let i = 0; i < response.data.expenses.length; i++)
         displayExpense(response.data.expenses[i]);
@@ -71,7 +106,7 @@ function displayExpense(obj) {
     try {
       const token = localStorage.getItem("token");
       let res = await axios.delete(
-        `http://localhost:3000/expense/deleteExpenses/${id}`,
+        `http://localhost:5000/expense/deleteExpenses/${id}`,
         { headers: { Authorization: token } }
       );
       console.log(res.status, res.statusText);
@@ -85,10 +120,32 @@ function displayExpense(obj) {
   parentEle.appendChild(childEle);
 }
 
+function showLeaderBoard() {
+  const inputElement = document.createElement("input");
+  inputElement.type = "button";
+  inputElement.value = "Show LeaderBoard";
+  inputElement.onclick = async () => {
+    const token = localStorage.getItem("token");
+    const userLeaderBoardArray = await axios.get(
+      "http://localhost:5000/premium/showLeaderBoard",
+      { headers: { Authorization: token } }
+    );
+    console.log(userLeaderBoardArray);
+
+    var LeaderBoardElem = document.getElementById("leaderboard");
+    LeaderBoardElem.innerHTML += "<h1>Leader Board</h1>";
+    userLeaderBoardArray.data.forEach((userDetails) => {
+      LeaderBoardElem.innerHTML += `<li>Name - ${userDetails.name} Total Expense - ${userDetails.total_cost}</li>`;
+    });
+  };
+
+  document.getElementById("message").appendChild(inputElement);
+}
+
 document.getElementById("rzp-button").onclick = async function (e) {
   const token = localStorage.getItem("token");
   const response = await axios.get(
-    "http://localhost:3000/purchase/premiumMembership",
+    "http://localhost:5000/purchase/premiumMembership",
     { headers: { Authorization: token } }
   );
   console.log(response);
@@ -101,7 +158,7 @@ document.getElementById("rzp-button").onclick = async function (e) {
     //This handler function will handle the success payment
     handler: async function (response) {
       await axios.post(
-        "http://localhost:3000/purchase/updateTransactionStatus",
+        "http://localhost:5000/purchase/updateTransactionStatus",
         {
           order_id: options.order_id,
           payment_id: response.razorpay_payment_id,
@@ -110,6 +167,10 @@ document.getElementById("rzp-button").onclick = async function (e) {
       );
 
       alert("You are a Premium User Now !");
+      document.getElementById("rzp-button").style.display = "none";
+      document.getElementById("message").innerHTML = "You are a Premium User";
+      localStorage.setItem("isadmin", true);
+      // showLeaderBoard();
     },
   };
 

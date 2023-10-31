@@ -4,6 +4,7 @@ const app = express();
 const SignUpRoute = require("./routes/userRoute");
 const ExpenseRoute = require("./routes/expenseRoute");
 const PurchaseRoute = require("./routes/purchaseRoute");
+const PremiumRoute = require("./routes/premiumRoute");
 
 const bodyParser = require("body-parser");
 const sequelize = require("./config/database");
@@ -21,6 +22,7 @@ app.use(express.static("public"));
 app.use("/user", SignUpRoute);
 app.use("/expense", ExpenseRoute);
 app.use("/purchase", PurchaseRoute);
+app.use("/premium", PremiumRoute);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
@@ -32,7 +34,7 @@ sequelize
   .sync()
   .then((result) => {
     // console.log(result);
-    app.listen(3000);
+    app.listen(5000);
   })
   .catch((err) => console.log(err));
 

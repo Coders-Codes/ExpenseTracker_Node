@@ -1,8 +1,8 @@
 const RazorPay = require("razorpay");
-// const env = require("dotenv").config();
 const Order = require("../models/order");
 const env = require("dotenv");
 env.config();
+// const userController = require("../controllers/userController");
 
 exports.purchasepremium = async (req, res) => {
   try {
@@ -17,7 +17,6 @@ exports.purchasepremium = async (req, res) => {
       if (err) {
         throw new Error(JSON.stringify(err));
       }
-      // console.log("printorder::", order);
       req.user
         .createOrder({ orderid: order.id, status: "PENDING" })
         .then(() => {
@@ -41,13 +40,15 @@ exports.updateTransactionStatus = async (req, res) => {
       paymentid: payment_id,
       status: "SUCCESSFULL",
     });
-    const promise2 = req.user.update({ ispremiumuser: true });
+    const promise2 = req.user.update({ ispremiumUser: true });
 
     Promise.all([promise1, promise2])
       .then(() => {
-        return res
-          .status(202)
-          .json({ success: true, message: "Transaction Successfull" });
+        return res.status(202).json({
+          success: true,
+          message: "Transaction Successfull",
+          // token: userController.generateAccessToken(userId, undefined, true),
+        });
       })
       .catch((error) => {
         throw new Error(error);

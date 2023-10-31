@@ -14,7 +14,7 @@ function login(event) {
 
   //Post request to create login of the user
   axios
-    .post("http://localhost:3000/user/login", loginDetails)
+    .post("http://localhost:5000/user/login", loginDetails)
     .then((response) => {
       alert(response.data.message);
       localStorage.setItem("token", response.data.token);

@@ -11,17 +11,24 @@ exports.signup = async (req, res) => {
 
     const saltrounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltrounds);
-    await User.create({ name, email, password: hashedPassword });
+    await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      ispremiumUser: false,
+    });
     return res.status(201).json(newUser);
   } catch (err) {
+    console.log(err);
     res.status(500).json({
       error: err,
     });
   }
 };
 
-function generateAccessToken(id, name) {
-  return jwt.sign({ userId: id, name: name }, "12345678909876543210");
+function generateAccessToken(id, name, ispremiumUser) {
+  // console.log("console at line 24", id);
+  return jwt.sign({ userId: id, name, ispremiumUser }, "12345678909876543210");
 }
 
 // LOGIN THE EXISTING USER BY POST REQUEST METHOD
@@ -42,7 +49,11 @@ exports.login = async (req, res) => {
           res.status(200).json({
             success: true,
             message: "User logged in Successfully",
-            token: generateAccessToken(user[0].id, user[0].name),
+            token: generateAccessToken(
+              user[0].id,
+              user[0].name,
+              user[0].ispremiumUser
+            ),
           });
         } else {
           res
